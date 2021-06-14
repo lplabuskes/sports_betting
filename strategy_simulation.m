@@ -1,8 +1,8 @@
 bet_portions = [.0309 .0649 .0129 .012 .0004 .0013 .0128 .0038];
 odds = [2.05 1.667 2.1 3 1.787 1.758 1.758 2.35];
-win_percent = [.52 .65 .49 .35 .56 .57 .58 .43]-.15;
+win_percent = [.52 .65 .49 .35 .56 .57 .58 .43];
 
-win_return = bet_portions.*odds;
+win_return = bet_portions.*(odds-1);
 lose_return = -bet_portions;
 
 n_bets = length(bet_portions);
