@@ -16,7 +16,15 @@ for i = 1:n_sims
     percent_change(i,:) = win_return*samples(:,:,i) + lose_return*not(samples(:,:,i));
 end
 total = cumprod(1+percent_change,2);
-figure(1)
+subplot(131)
 plot(median(total))
-figure(2)
+title('Median')
+axis square
+subplot(132)
 plot(min(total))
+title('Minimum')
+axis square
+subplot(133)
+plot(max(total))
+title('Maximum')
+axis square
