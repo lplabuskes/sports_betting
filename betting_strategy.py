@@ -26,3 +26,8 @@ def compute_bets(bankroll):
     for bet in exact_bets:
         amount = np.floor(4 * bankroll * bet[2][0]) / 4
         print("{} on {} at {}, {}".format(amount, teams[bet[0]][bet[1]], odds_bov[bet[0], bet[1]], teams[bet[0]][2]))
+
+
+if __name__ == "__main__":
+    current_bankroll = 810.65
+    compute_bets(current_bankroll)

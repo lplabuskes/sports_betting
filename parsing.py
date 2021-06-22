@@ -70,14 +70,14 @@ def mlb_API():
 
 def combined_parsing():
     short_names = {"Arizona Diamondbacks": "ARI", "Atlanta Braves": "ATL", "Baltimore Orioles": "BAL",
-                   "Boston Red Sox": "BOS", "Chicago Cubs": "CHC", "Chicago White Sox": "CWS", "Cincinnati Reds": "CIN",
+                   "Boston Red Sox": "BOS", "Chicago Cubs": "CHC", "Chicago White Sox": "CHW", "Cincinnati Reds": "CIN",
                    "Cleveland Indians": "CLE", "Colorado Rockies": "COL", "Detroit Tigers": "DET", "Houston Astros": "HOU",
                    "Kansas City Royals": "KC", "Los Angeles Angels": "LAA", "Los Angeles Dodgers": "LAD",
                    "Miami Marlins": "MIA", "Milwaukee Brewers": "MIL", "Minnesota Twins": "MIN", "New York Mets": "NYM",
                    "New York Yankees": "NYY", "Oakland Athletics": "OAK", "Philadelphia Phillies": "PHI",
                    "Pittsburgh Pirates": "PIT", "San Diego Padres": "SD", "San Francisco Giants": "SF",
-                   "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB", "Texas Ramgers": "TEX",
-                   "Toronto Blue Jays": "TOR", "Washington Nationals": "WAS"}
+                   "Seattle Mariners": "SEA", "St. Louis Cardinals": "STL", "Tampa Bay Rays": "TB", "Texas Rangers": "TEX",
+                   "Toronto Blue Jays": "TOR", "Washington Nationals": "WSH"}
 
     odds_538, teams_538 = mlb_538()
     odds_bov, teams_bov = mlb_API()
@@ -94,8 +94,9 @@ def combined_parsing():
         ampm = "a.m." if game_time.tm_hour < 12 else "p.m."
         hour_12 = ((game_time.tm_hour - 1) % 12) + 1
         game[2] = "{}:{:02} {}".format(hour_12, game_time.tm_min, ampm)
+        hash_string = (game[0]+game[1]+game[2])[:-8]
 
-        bov_lookup[game] = odds_bov[i]
+        bov_lookup[hash_string] = odds_bov[i]
 
     final_538 = []
     final_bov = []
@@ -103,14 +104,15 @@ def combined_parsing():
 
     # this reorders the odds so they agree with 538 and eliminates any games that bovada might not have odds for
     for i in range(len(teams_538)):
-        if teams_538[i] not in bov_lookup:
+        search_string = (teams_538[i][0]+teams_538[i][1]+teams_538[i][2])[:-8]
+        if search_string not in bov_lookup:
             continue
         final_538.append(odds_538[i])
-        final_bov.append(bov_lookup[teams_538[i]])
+        final_bov.append(bov_lookup[search_string])
         final_teams.append(teams_538[i])
 
     return final_bov, final_538, final_teams
 
 
 if __name__ == "__main__":
-    mlb_538()
+    test1, test2, test3 = combined_parsing()
