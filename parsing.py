@@ -1,7 +1,8 @@
 from requests import get
 from datetime import date
+from oddsapi import KEY
 
-def mlb538():
+def mlb_538():
     page_html = get("https://projects.fivethirtyeight.com/2021-mlb-predictions/games/").text
     team_entries = page_html.split("<tr class=\"tr\">")[1:]
 
@@ -35,6 +36,33 @@ def mlb538():
 
     return odds, teams
 
+def mlb_API():
+    options = {"apiKey": KEY, "sport": "baseball_mlb", "region": "us"}
+    games = get("https://api.the-odds-api.com/v3/odds/", params=options).json()["data"]
+
+    odds = []
+    teams = []
+
+    for game in games:
+        bovada_idx = -1
+        for i in range(len(game["sites"])):
+            if game["sites"][i]["site_key"] == "bovada":
+                bovada_idx = i
+                break
+        if bovada_idx == -1:
+            continue
+
+        game_odds = game["sites"][bovada_idx]["odds"]["h2h"]
+        game_teams = game["teams"]
+
+        if game["home_team"] == game_teams[0]:
+            odds.append(game_odds)
+            teams.append([game_teams[0], game_teams[1], game["commence_time"]])
+        else:
+            odds.append([game_odds[1], game_odds[0]])
+            teams.append([game_teams[1], game_teams[0], game["commence_time"]])
+
+    return odds, teams
 
 if __name__ == "__main__":
     mlb538()
